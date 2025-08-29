@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoHub - Watch & Share Videos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
+        }
+        
+        .sidebar {
+            width: 240px;
+            height: calc(100vh - 56px);
+            position: fixed;
+            top: 56px;
+            left: 0;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .video-card:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #3ea6ff;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+        
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+        
+        .video-duration {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 2px;
+            padding: 2px 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <!-- Header -->
+    <header class="bg-gray-900 border-b border-gray-700 fixed top-0 left-0 right-0 z-50">
+        <div class="flex items-center justify-between px-4 py-2">
+            <!-- Left section -->
+            <div class="flex items-center space-x-4">
+                <button class="text-white p-2 rounded-full hover:bg-gray-700" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center mr-2">
+                        <i class="fas fa-play text-white text-sm"></i>
+                    </div>
+                    <span class="text-white font-bold text-xl">VideoHub</span>
+                </div>
+            </div>
+
+            <!-- Center section - Search -->
+            <div class="flex-1 max-w-2xl mx-8">
+                <div class="flex">
+                    <input type="text" placeholder="Search videos..." 
+                           class="search-input bg-gray-800 text-white px-4 py-2 rounded-l-full w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button class="bg-gray-700 text-white px-6 py-2 rounded-r-full hover:bg-gray-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right section -->
+            <div class="flex items-center space-x-4">
+                <button class="text-white p-2 rounded-full hover:bg-gray-700">
+                    <i class="fas fa-video"></i>
+                </button>
+                <button class="text-white p-2 rounded-full hover:bg-gray-700">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar bg-gray-900">
+        <nav class="p-3">
+            <div class="mb-6">
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-home mr-4"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-fire mr-4"></i>
+                    <span>Trending</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-compass mr-4"></i>
+                    <span>Explore</span>
+                </a>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-medium px-3 py-2">SUBSCRIPTIONS</h3>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <div class="channel-avatar mr-3"></div>
+                    <span>Tech Channel</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);"></div>
+                    <span>Music Hub</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #a1c4fd, #c2e9fb);"></div>
+                    <span>Gaming World</span>
+                </a>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-gray-400 text-sm font-medium px-3 py-2">LIBRARY</h3>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-history mr-4"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-clock mr-4"></i>
+                    <span>Watch later</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-800 text-white">
+                    <i class="fas fa-thumbs-up mr-4"></i>
+                    <span>Liked videos</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content mt-16">
+        <!-- Video Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            <!-- Video Card 1 -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(1)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e82997dd-d910-47b8-99e9-d78202bcf82b.png" alt="Modern tech review setup with multiple monitors showing coding tutorials and product reviews" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">12:34</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">How to Build Modern Web Applications with React and Tailwind CSS</h3>
+                            <p class="text-gray-400 text-xs">Tech Channel</p>
+                            <p class="text-gray-400 text-xs">245K views • 2 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 2 -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(2)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e039aaa2-f618-4c7d-91f0-a1c8a17a487b.png" alt="Music production studio with professional audio equipment and mixing console" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">8:21</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">Top 10 Music Production Tips for Beginners 2024</h3>
+                            <p class="text-gray-400 text-xs">Music Hub</p>
+                            <p class="text-gray-400 text-xs">189K views • 1 week ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 3 -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(3)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/add11823-779f-4ca9-ac78-26853fe80159.png" alt="Gaming setup with RGB lighting, mechanical keyboard, and high-end gaming monitor" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">15:47</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #a1c4fd, #c2e9fb);"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">Ultimate Gaming Setup Tour 2024 - RGB Paradise</h3>
+                            <p class="text-gray-400 text-xs">Gaming World</p>
+                            <p class="text-gray-400 text-xs">356K views • 3 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 4 -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(4)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/86639c80-d455-4ed1-be32-6d92ce4feaf4.png" alt="Cooking tutorial showing professional kitchen with chef preparing gourmet meal" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">22:15</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #f6d365, #fda085);"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">5 Gourmet Recipes You Can Make at Home</h3>
+                            <p class="text-gray-400 text-xs">Cooking Master</p>
+                            <p class="text-gray-400 text-xs">412K views • 5 days ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 5 -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(5)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/32fd74df-df3e-4a7b-bf8a-020a9544aa38.png" alt="Fitness trainer demonstrating workout routine in modern gym with equipment" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">18:32</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #84fab0, #8fd3f4);"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">30-Day Fitness Challenge: Transform Your Body</h3>
+                            <p class="text-gray-400 text-xs">FitLife</p>
+                            <p class="text-gray-400 text-xs">298K views • 2 weeks ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More video cards... -->
+            <div class="video-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer" onclick="playVideo(6)">
+                <div class="relative">
+                    <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/13360d1d-ef86-4aaf-85c4-ba4d23311ebe.png" alt="Travel vlog showing beautiful tropical beach with crystal clear water and palm trees" class="w-full h-auto">
+                    <span class="video-duration absolute bottom-2 right-2 text-white">25:41</span>
+                </div>
+                <div class="p-3">
+                    <div class="flex">
+                        <div class="channel-avatar mr-3" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);"></div>
+                        <div class="flex-1">
+                            <h3 class="text-white font-medium text-sm mb-1 line-clamp-2">Bali Travel Guide: Hidden Gems You Must Visit</h3>
+                            <p class="text-gray-400 text-xs">Travel Diaries</p>
+                            <p class="text-gray-400 text-xs">567K views • 1 month ago</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Video Player Modal -->
+    <div id="videoModal" class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden flex items-center justify-center">
+        <div class="relative w-full max-w-4xl mx-4">
+            <button onclick="closeVideo()" class="absolute -top-12 right-0 text-white text-2xl p-2">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="bg-black rounded-lg overflow-hidden">
+                <div class="w-full aspect-video bg-gray-800 flex items-center justify-center">
+                    <div class="text-center">
+                        <i class="fas fa-play-circle text-6xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-400">Video playback simulation</p>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h2 class="text-white text-xl font-bold mb-2" id="videoTitle">Video Title</h2>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-gray-400">245K views</span>
+                            <span class="text-gray-400">•</span>
+                            <span class="text-gray-400">2 days ago</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button class="text-white hover:text-blue-400">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span class="ml-1">2.4K</span>
+                            </button>
+                            <button class="text-white hover:text-blue-400">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                            <button class="text-white hover:text-blue-400">
+                                <i class="fas fa-share"></i>
+                                <span class="ml-1">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function playVideo(videoId) {
+            const modal = document.getElementById('videoModal');
+            const videoTitle = document.getElementById('videoTitle');
+            
+            const titles = [
+                "How to Build Modern Web Applications with React and Tailwind CSS",
+                "Top 10 Music Production Tips for Beginners 2024",
+                "Ultimate Gaming Setup Tour 2024 - RGB Paradise",
+                "5 Gourmet Recipes You Can Make at Home",
+                "30-Day Fitness Challenge: Transform Your Body",
+                "Bali Travel Guide: Hidden Gems You Must Visit"
+            ];
+            
+            videoTitle.textContent = titles[videoId - 1] || "Video Title";
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const query = this.value.trim();
+                if (query) {
+                    alert(`Searching for: ${query}`);
+                    this.value = '';
+                }
+            }
+        });
+
+        // Responsive sidebar handling
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.querySelector('.sidebar').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+
